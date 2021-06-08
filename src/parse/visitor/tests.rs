@@ -1,4 +1,5 @@
 use crate::parse::parse_code;
+use crate::parse::visitor::MiscFeature;
 use crate::parse::visitor::StatementFeature;
 use crate::parse::NodeVisitor;
 use swc_common::sync::Lrc;
@@ -21,4 +22,16 @@ fn assert_stmt_feature<S: Into<String>>(code: S, feature: StatementFeature) {
 fn assert_no_stmt_feature<S: Into<String>>(code: S, feature: StatementFeature) {
     let visitor = check_code(code);
     assert!(!visitor.statement_features.contains(&feature))
+}
+
+/// Asserts given visitor has given feature.
+fn assert_misc_feature<S: Into<String>>(code: S, feature: MiscFeature) {
+    let visitor = check_code(code);
+    assert!(visitor.misc_features.contains(&feature))
+}
+
+/// Asserts given visitor does not have given feature.
+fn assert_no_misc_feature<S: Into<String>>(code: S, feature: MiscFeature) {
+    let visitor = check_code(code);
+    assert!(!visitor.misc_features.contains(&feature))
 }

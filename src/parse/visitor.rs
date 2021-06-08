@@ -32,18 +32,28 @@ impl VisitAll for NodeVisitor {
                 self.statement_features.insert(StatementFeature::Block);
             }
             Stmt::Decl(decl) => match decl {
-                Decl::Var(VarDecl {
-                    kind: VarDeclKind::Let,
-                    ..
-                }) => {
-                    self.statement_features.insert(StatementFeature::LetBinding);
-                }
-                Decl::Var(VarDecl {
-                    kind: VarDeclKind::Const,
-                    ..
-                }) => {
-                    self.statement_features
-                        .insert(StatementFeature::ConstBinding);
+                Decl::Var(VarDecl { kind, decls, .. }) => {
+                    match kind {
+                        VarDeclKind::Var => {
+                            self.statement_features
+                                .insert(StatementFeature::VariableStatement);
+                        }
+                        VarDeclKind::Let => {
+                            self.statement_features.insert(StatementFeature::LetBinding);
+                        }
+                        VarDeclKind::Const => {
+                            self.statement_features
+                                .insert(StatementFeature::ConstBinding);
+                        }
+                    }
+                    for decl in decls {
+                        match decl.init {
+                            None => {}
+                            Some(_) => {
+                                self.misc_features.insert(MiscFeature::Initializer);
+                            }
+                        }
+                    }
                 }
                 _ => {
                     // unimplemented!("Not implemneted yet")

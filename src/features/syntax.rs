@@ -6,10 +6,17 @@ pub enum StatementFeature {
     LetBinding,
     /// const ...
     ConstBinding,
+    /// var ...
+    VariableStatement,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum ExpressionFeature {}
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum MiscFeature {}
+pub enum MiscFeature {
+    /// = expr
+    Initializer,
+    /// BindingIdentifier
+    BindingIdentifier,
+}
