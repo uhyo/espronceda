@@ -10,6 +10,8 @@ pub enum StatementFeature {
     VariableStatement,
     /// ;
     EmptyStatement,
+    /// expr;
+    ExpressionStatement,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
