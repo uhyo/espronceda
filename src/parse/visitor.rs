@@ -61,6 +61,10 @@ impl VisitAll for NodeVisitor {
                     // unimplemented!("Not implemneted yet")
                 }
             },
+            Stmt::Empty(..) => {
+                self.statement_features
+                    .insert(StatementFeature::EmptyStatement);
+            }
             _ => {
                 // unimplemented!("Not implemented yet")
             }

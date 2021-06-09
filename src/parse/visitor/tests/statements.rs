@@ -1,2 +1,2 @@
 mod block;
-mod var_decl;
+mod empty;mod var_decl;

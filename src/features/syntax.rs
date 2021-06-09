@@ -8,6 +8,8 @@ pub enum StatementFeature {
     ConstBinding,
     /// var ...
     VariableStatement,
+    /// ;
+    EmptyStatement,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
