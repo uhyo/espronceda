@@ -3,6 +3,8 @@ use crate::features::syntax::MiscFeature;
 use crate::features::syntax::StatementFeature;
 use std::collections::HashSet;
 use swc_ecma_ast::Decl;
+use swc_ecma_ast::ObjectPatProp;
+use swc_ecma_ast::Pat;
 use swc_ecma_ast::Stmt;
 use swc_ecma_ast::VarDecl;
 use swc_ecma_ast::VarDeclKind;
@@ -62,6 +64,33 @@ impl VisitAll for NodeVisitor {
             _ => {
                 // unimplemented!("Not implemented yet")
             }
+        }
+    }
+    fn visit_pat(&mut self, pat: &Pat, _parent: &dyn Node) {
+        match pat {
+            Pat::Object(obj_pat) => {
+                self.misc_features.insert(MiscFeature::ObjectBindingPattern);
+                for prop in &obj_pat.props {
+                    match prop {
+                        ObjectPatProp::Rest(..) => {
+                            self.misc_features
+                                .insert(MiscFeature::ObjectRestBindingPattern);
+                        }
+                        _ => {}
+                    }
+                }
+            }
+            Pat::Array(array_pat) => {
+                self.misc_features.insert(MiscFeature::ArrayBindingPattern);
+                if array_pat.elems.iter().any(Option::is_none) {
+                    self.misc_features.insert(MiscFeature::EmptyBindingPattern);
+                }
+            }
+            Pat::Rest(..) => {
+                self.misc_features
+                    .insert(MiscFeature::ArrayRestBindingPattern);
+            }
+            _ => {}
         }
     }
 }

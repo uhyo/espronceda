@@ -19,4 +19,14 @@ pub enum MiscFeature {
     Initializer,
     /// BindingIdentifier
     BindingIdentifier,
+    /// { ... }
+    ObjectBindingPattern,
+    /// [...]
+    ArrayBindingPattern,
+    /// ...rest in object binding pattern
+    ObjectRestBindingPattern,
+    /// ...rest in array binding pattern
+    ArrayRestBindingPattern,
+    /// , /* here */ in array binding pattern
+    EmptyBindingPattern,
 }

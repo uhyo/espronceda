@@ -4,6 +4,8 @@ use crate::parse::visitor::tests::assert_no_misc_feature;
 use crate::parse::visitor::tests::assert_no_stmt_feature;
 use crate::parse::visitor::tests::assert_stmt_feature;
 
+mod pat;
+
 #[test]
 fn let_only() {
     assert_stmt_feature("let a", StatementFeature::LetBinding);
