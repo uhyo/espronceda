@@ -16,6 +16,10 @@ pub enum StatementFeature {
     IfStatement,
     // if-else
     IfElseStatement,
+    // while
+    WhileStatement,
+    // do-while
+    DoWhileStatement,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]

@@ -76,6 +76,14 @@ impl VisitAll for NodeVisitor {
                     StatementFeature::IfElseStatement
                 });
             }
+            Stmt::While(..) => {
+                self.statement_features
+                    .insert(StatementFeature::WhileStatement);
+            }
+            Stmt::DoWhile(..) => {
+                self.statement_features
+                    .insert(StatementFeature::DoWhileStatement);
+            }
             _ => {
                 // unimplemented!("Not implemented yet")
             }
