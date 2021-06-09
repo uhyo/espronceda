@@ -69,6 +69,13 @@ impl VisitAll for NodeVisitor {
                 self.statement_features
                     .insert(StatementFeature::ExpressionStatement);
             }
+            Stmt::If(if_stmt) => {
+                self.statement_features.insert(if if_stmt.alt.is_none() {
+                    StatementFeature::IfStatement
+                } else {
+                    StatementFeature::IfElseStatement
+                });
+            }
             _ => {
                 // unimplemented!("Not implemented yet")
             }

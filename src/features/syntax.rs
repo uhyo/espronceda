@@ -12,6 +12,10 @@ pub enum StatementFeature {
     EmptyStatement,
     /// expr;
     ExpressionStatement,
+    // if (...) { ... }
+    IfStatement,
+    // if-else
+    IfElseStatement,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
