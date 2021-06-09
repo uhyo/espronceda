@@ -8,6 +8,8 @@ use swc_ecma_ast::Pat;
 use swc_ecma_ast::Stmt;
 use swc_ecma_ast::VarDecl;
 use swc_ecma_ast::VarDeclKind;
+use swc_ecma_ast::VarDeclOrExpr;
+use swc_ecma_ast::VarDeclOrPat;
 use swc_ecma_visit::Node;
 use swc_ecma_visit::VisitAll;
 
@@ -24,6 +26,26 @@ pub struct NodeVisitor {
 impl NodeVisitor {
     pub fn new() -> Self {
         Default::default()
+    }
+
+    fn visit_vardecl_or_pat(
+        &mut self,
+        vdp: &VarDeclOrPat,
+        (expr, var, lexical): (StatementFeature, StatementFeature, StatementFeature),
+    ) {
+        match vdp {
+            VarDeclOrPat::Pat(..) => {
+                self.statement_features.insert(expr);
+            }
+            VarDeclOrPat::VarDecl(ref var_decl) => match var_decl.kind {
+                VarDeclKind::Var => {
+                    self.statement_features.insert(var);
+                }
+                VarDeclKind::Let | VarDeclKind::Const => {
+                    self.statement_features.insert(lexical);
+                }
+            },
+        }
     }
 }
 
@@ -84,6 +106,49 @@ impl VisitAll for NodeVisitor {
                 self.statement_features
                     .insert(StatementFeature::DoWhileStatement);
             }
+            Stmt::For(for_stmt) => {
+                match for_stmt.init {
+                    None | Some(VarDeclOrExpr::Expr(..)) => {
+                        // empty or expr
+                        self.statement_features
+                            .insert(StatementFeature::ForExprStatement);
+                    }
+                    Some(VarDeclOrExpr::VarDecl(ref var_decl)) => match var_decl.kind {
+                        VarDeclKind::Var => {
+                            self.statement_features
+                                .insert(StatementFeature::ForVarStatement);
+                        }
+                        VarDeclKind::Let | VarDeclKind::Const => {
+                            self.statement_features
+                                .insert(StatementFeature::ForLexicalStatement);
+                        }
+                    },
+                }
+            }
+            Stmt::ForIn(for_stmt) => self.visit_vardecl_or_pat(
+                &for_stmt.left,
+                (
+                    StatementFeature::ForInExprStatement,
+                    StatementFeature::ForInVarStatement,
+                    StatementFeature::ForInLexicalStatement,
+                ),
+            ),
+            Stmt::ForOf(for_stmt) => self.visit_vardecl_or_pat(
+                &for_stmt.left,
+                if for_stmt.await_token.is_none() {
+                    (
+                        StatementFeature::ForOfExprStatement,
+                        StatementFeature::ForOfVarStatement,
+                        StatementFeature::ForOfLexicalStatement,
+                    )
+                } else {
+                    (
+                        StatementFeature::ForAwaitOfExprStatement,
+                        StatementFeature::ForAwaitOfVarStatement,
+                        StatementFeature::ForAwaitOfLexicalStatement,
+                    )
+                },
+            ),
             _ => {
                 // unimplemented!("Not implemented yet")
             }

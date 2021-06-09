@@ -27,12 +27,6 @@ fn var_only() {
 }
 
 #[test]
-#[ignore]
-fn let_in_for() {
-    assert_stmt_feature("for (let i of arr);", StatementFeature::LetBinding);
-}
-
-#[test]
 fn let_in_block() {
     assert_stmt_feature("{ const foo = 3; }", StatementFeature::ConstBinding);
 }
@@ -51,4 +45,13 @@ fn var_is_not_let() {
 #[test]
 fn check_no_initializer() {
     assert_no_misc_feature("let a;", MiscFeature::Initializer)
+}
+
+#[test]
+fn let_in_for() {
+    assert_no_stmt_feature(
+        "for (let i = 0; i < 10; i++);",
+        StatementFeature::LetBinding,
+    );
+    assert_no_stmt_feature("for (let i of arr);", StatementFeature::LetBinding);
 }

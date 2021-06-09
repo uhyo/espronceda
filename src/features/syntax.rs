@@ -20,6 +20,30 @@ pub enum StatementFeature {
     WhileStatement,
     // do-while
     DoWhileStatement,
+    // for (expr; ...; ...)
+    ForExprStatement,
+    // for (var ...; ...; ...)
+    ForVarStatement,
+    // for (let ...; ...; ...)
+    ForLexicalStatement,
+    // for (expr in ...)
+    ForInExprStatement,
+    // for (var pat in ...)
+    ForInVarStatement,
+    // for (let pat in ...)
+    ForInLexicalStatement,
+    // for (expr of ...)
+    ForOfExprStatement,
+    // for (var pat of ...)
+    ForOfVarStatement,
+    // for (let pat of ...)
+    ForOfLexicalStatement,
+    // for await (expr of ...)
+    ForAwaitOfExprStatement,
+    // for await (var pat of ...)
+    ForAwaitOfVarStatement,
+    // for await (let pat of ...)
+    ForAwaitOfLexicalStatement,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
