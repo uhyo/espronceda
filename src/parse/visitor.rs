@@ -173,6 +173,10 @@ impl VisitAll for NodeVisitor {
                         StatementFeature::ReturnNothingStatement
                     });
             }
+            Stmt::With(..) => {
+                self.statement_features
+                    .insert(StatementFeature::WithStatement);
+            }
             _ => {
                 // unimplemented!("Not implemented yet")
             }

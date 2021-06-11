@@ -56,6 +56,8 @@ pub enum StatementFeature {
     ReturnNothingStatement,
     // return expr;
     ReturnExprStatement,
+    // with (expr) statement
+    WithStatement,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
