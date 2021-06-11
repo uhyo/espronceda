@@ -192,6 +192,10 @@ impl VisitAll for NodeVisitor {
                 self.statement_features
                     .insert(StatementFeature::LabelledStatement);
             }
+            Stmt::Throw(..) => {
+                self.statement_features
+                    .insert(StatementFeature::ThrowStatement);
+            }
             _ => {
                 // unimplemented!("Not implemented yet")
             }

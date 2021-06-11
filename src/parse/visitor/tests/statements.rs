@@ -8,6 +8,7 @@ mod if_stmt;
 mod labelled;
 mod r#return;
 mod switch;
+mod throw;
 mod var_decl;
 mod r#while;
 mod with;
