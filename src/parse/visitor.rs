@@ -214,8 +214,9 @@ impl VisitAll for NodeVisitor {
                     });
                 });
             }
-            _ => {
-                // unimplemented!("Not implemented yet")
+            Stmt::Debugger(..) => {
+                self.statement_features
+                    .insert(StatementFeature::DebuggerStatement);
             }
         }
     }

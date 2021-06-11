@@ -1,6 +1,7 @@
 mod block;
 mod r#break;
 mod r#continue;
+mod debugger;
 mod empty;
 mod expr;
 mod r#for;

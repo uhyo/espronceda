@@ -70,6 +70,8 @@ pub enum StatementFeature {
     TryFinallyStatement,
     // try-catch-finally
     TryCatchFinallyStatement,
+    // debugger;
+    DebuggerStatement,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
