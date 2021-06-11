@@ -9,6 +9,7 @@ mod labelled;
 mod r#return;
 mod switch;
 mod throw;
+mod r#try;
 mod var_decl;
 mod r#while;
 mod with;

@@ -64,6 +64,12 @@ pub enum StatementFeature {
     LabelledStatement,
     // throw expr;
     ThrowStatement,
+    // try-catch
+    TryCatchStatement,
+    // try-finally
+    TryFinallyStatement,
+    // try-catch-finally
+    TryCatchFinallyStatement,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -89,4 +95,8 @@ pub enum MiscFeature {
     CaseClause,
     /// default: ... in switch
     DefaultClause,
+    // catch(e) in try
+    CatchBinding,
+    // catch in try
+    CatchNoBinding,
 }

@@ -196,6 +196,24 @@ impl VisitAll for NodeVisitor {
                 self.statement_features
                     .insert(StatementFeature::ThrowStatement);
             }
+            Stmt::Try(try_stmt) => {
+                self.statement_features
+                    .insert(match (&try_stmt.handler, &try_stmt.finalizer) {
+                        (None, None) => {
+                            panic!("try without catch nor finally");
+                        }
+                        (Some(..), None) => StatementFeature::TryCatchStatement,
+                        (None, Some(..)) => StatementFeature::TryFinallyStatement,
+                        (Some(..), Some(..)) => StatementFeature::TryCatchFinallyStatement,
+                    });
+                try_stmt.handler.iter().for_each(|h| {
+                    self.misc_features.insert(if h.param.is_some() {
+                        MiscFeature::CatchBinding
+                    } else {
+                        MiscFeature::CatchNoBinding
+                    });
+                });
+            }
             _ => {
                 // unimplemented!("Not implemented yet")
             }
