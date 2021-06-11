@@ -58,6 +58,8 @@ pub enum StatementFeature {
     ReturnExprStatement,
     // with (expr) statement
     WithStatement,
+    // switch (expr) { ... }
+    SwitchStatement,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -79,4 +81,8 @@ pub enum MiscFeature {
     ArrayRestBindingPattern,
     /// , /* here */ in array binding pattern
     EmptyBindingPattern,
+    /// case expr: ... in switch
+    CaseClause,
+    /// default: ... in switch
+    DefaultClause,
 }

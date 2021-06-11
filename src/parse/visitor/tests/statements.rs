@@ -6,6 +6,7 @@ mod expr;
 mod r#for;
 mod if_stmt;
 mod r#return;
+mod switch;
 mod var_decl;
 mod r#while;
 mod with;

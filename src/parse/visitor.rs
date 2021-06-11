@@ -177,6 +177,17 @@ impl VisitAll for NodeVisitor {
                 self.statement_features
                     .insert(StatementFeature::WithStatement);
             }
+            Stmt::Switch(switch_stmt) => {
+                self.statement_features
+                    .insert(StatementFeature::SwitchStatement);
+                for case in switch_stmt.cases.iter() {
+                    self.misc_features.insert(if case.test.is_some() {
+                        MiscFeature::CaseClause
+                    } else {
+                        MiscFeature::DefaultClause
+                    });
+                }
+            }
             _ => {
                 // unimplemented!("Not implemented yet")
             }
