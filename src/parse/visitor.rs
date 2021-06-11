@@ -165,6 +165,14 @@ impl VisitAll for NodeVisitor {
                         StatementFeature::BreakStatement
                     });
             }
+            Stmt::Return(return_stmt) => {
+                self.statement_features
+                    .insert(if return_stmt.arg.is_some() {
+                        StatementFeature::ReturnExprStatement
+                    } else {
+                        StatementFeature::ReturnNothingStatement
+                    });
+            }
             _ => {
                 // unimplemented!("Not implemented yet")
             }

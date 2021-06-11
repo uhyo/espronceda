@@ -52,6 +52,10 @@ pub enum StatementFeature {
     BreakStatement,
     // break label;
     BreakLabelStatement,
+    // return;
+    ReturnNothingStatement,
+    // return expr;
+    ReturnExprStatement,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
