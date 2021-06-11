@@ -5,6 +5,7 @@ mod empty;
 mod expr;
 mod r#for;
 mod if_stmt;
+mod labelled;
 mod r#return;
 mod switch;
 mod var_decl;

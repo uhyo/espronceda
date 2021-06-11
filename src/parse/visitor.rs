@@ -188,6 +188,10 @@ impl VisitAll for NodeVisitor {
                     });
                 }
             }
+            Stmt::Labeled(..) => {
+                self.statement_features
+                    .insert(StatementFeature::LabelledStatement);
+            }
             _ => {
                 // unimplemented!("Not implemented yet")
             }

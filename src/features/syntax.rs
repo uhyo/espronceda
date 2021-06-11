@@ -60,6 +60,8 @@ pub enum StatementFeature {
     WithStatement,
     // switch (expr) { ... }
     SwitchStatement,
+    // label: stmt
+    LabelledStatement,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
