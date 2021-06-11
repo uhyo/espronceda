@@ -157,6 +157,14 @@ impl VisitAll for NodeVisitor {
                         StatementFeature::ContinueStatement
                     });
             }
+            Stmt::Break(break_stmt) => {
+                self.statement_features
+                    .insert(if break_stmt.label.is_some() {
+                        StatementFeature::BreakLabelStatement
+                    } else {
+                        StatementFeature::BreakStatement
+                    });
+            }
             _ => {
                 // unimplemented!("Not implemented yet")
             }

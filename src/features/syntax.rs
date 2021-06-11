@@ -48,6 +48,10 @@ pub enum StatementFeature {
     ContinueStatement,
     // continue label;
     ContinueLabelStatement,
+    // break;
+    BreakStatement,
+    // break label;
+    BreakLabelStatement,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
