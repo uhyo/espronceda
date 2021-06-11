@@ -1,4 +1,5 @@
 mod block;
+mod r#continue;
 mod empty;
 mod expr;
 mod r#for;

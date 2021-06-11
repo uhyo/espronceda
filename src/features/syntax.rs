@@ -44,6 +44,10 @@ pub enum StatementFeature {
     ForAwaitOfVarStatement,
     // for await (let pat of ...)
     ForAwaitOfLexicalStatement,
+    // continue;
+    ContinueStatement,
+    // continue label;
+    ContinueLabelStatement,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]

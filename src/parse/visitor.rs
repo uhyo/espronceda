@@ -149,6 +149,14 @@ impl VisitAll for NodeVisitor {
                     )
                 },
             ),
+            Stmt::Continue(continue_stmt) => {
+                self.statement_features
+                    .insert(if continue_stmt.label.is_some() {
+                        StatementFeature::ContinueLabelStatement
+                    } else {
+                        StatementFeature::ContinueStatement
+                    });
+            }
             _ => {
                 // unimplemented!("Not implemented yet")
             }
