@@ -158,4 +158,6 @@ pub enum MiscFeature {
     SetterProp,
     /// extends expr
     ExtendsHeritage,
+    /// static method() {} in class
+    StaticMethod,
 }

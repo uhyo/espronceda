@@ -3,6 +3,8 @@ use crate::features::syntax::MiscFeature;
 use crate::parse::visitor::tests::assert_expr_feature;
 use crate::parse::visitor::tests::assert_misc_feature;
 
+mod body;
+
 #[test]
 fn named_class_expression() {
     assert_expr_feature(

@@ -4,6 +4,8 @@ use crate::parse::visitor::tests::assert_misc_feature;
 use crate::parse::visitor::tests::assert_no_stmt_feature;
 use crate::parse::visitor::tests::assert_stmt_feature;
 
+mod body;
+
 #[test]
 fn class_declaration() {
     assert_stmt_feature(

@@ -86,7 +86,7 @@ impl NodeVisitor {
             Decl::Fn(fn_decl) => {
                 self.visit_func_decl(&fn_decl.function, true);
             }
-            Decl::Class(class_decl) => {
+            Decl::Class(..) => {
                 self.statement_features
                     .insert(StatementFeature::ClassDeclaration);
             }
@@ -426,6 +426,16 @@ impl VisitAll for NodeVisitor {
     fn visit_class(&mut self, class: &Class, _parent: &dyn Node) {
         if class.super_class.is_some() {
             self.misc_features.insert(MiscFeature::ExtendsHeritage);
+        }
+        for member in class.body.iter() {
+            match member {
+                ClassMember::Method(method) => {
+                    if method.is_static {
+                        self.misc_features.insert(MiscFeature::StaticMethod);
+                    }
+                }
+                _ => {}
+            }
         }
     }
     fn visit_class_member(&mut self, member: &ClassMember, _parent: &dyn Node) {
