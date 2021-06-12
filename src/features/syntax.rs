@@ -156,4 +156,6 @@ pub enum MiscFeature {
     GetterProp,
     /// set prop(n) { ... }
     SetterProp,
+    /// extends expr
+    ExtendsHeritage,
 }

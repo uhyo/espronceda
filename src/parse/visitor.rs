@@ -3,6 +3,7 @@ use crate::features::syntax::MiscFeature;
 use crate::features::syntax::StatementFeature;
 use std::collections::HashSet;
 use swc_ecma_ast::BlockStmtOrExpr;
+use swc_ecma_ast::Class;
 use swc_ecma_ast::ClassMember;
 use swc_ecma_ast::Decl;
 use swc_ecma_ast::DefaultDecl;
@@ -85,7 +86,7 @@ impl NodeVisitor {
             Decl::Fn(fn_decl) => {
                 self.visit_func_decl(&fn_decl.function, true);
             }
-            Decl::Class(..) => {
+            Decl::Class(class_decl) => {
                 self.statement_features
                     .insert(StatementFeature::ClassDeclaration);
             }
@@ -420,6 +421,11 @@ impl VisitAll for NodeVisitor {
                 }
                 _ => {}
             }
+        }
+    }
+    fn visit_class(&mut self, class: &Class, _parent: &dyn Node) {
+        if class.super_class.is_some() {
+            self.misc_features.insert(MiscFeature::ExtendsHeritage);
         }
     }
     fn visit_class_member(&mut self, member: &ClassMember, _parent: &dyn Node) {
