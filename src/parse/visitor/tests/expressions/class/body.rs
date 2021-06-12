@@ -1,5 +1,6 @@
 use crate::features::syntax::MiscFeature;
 use crate::parse::visitor::tests::assert_misc_feature;
+use crate::parse::visitor::tests::assert_no_misc_feature;
 
 #[test]
 fn static_method() {
@@ -150,5 +151,35 @@ fn method_property_name_numeric_literal() {
             0xff() {}
         }",
         MiscFeature::PropertyNameNumericLiteral,
+    )
+}
+
+#[test]
+fn field_property_name_computed() {
+    assert_misc_feature(
+        "const c = class {
+            [1 + 2] = 3;
+        }",
+        MiscFeature::PropertyNameComputed,
+    )
+}
+
+#[test]
+fn method_property_name_computed() {
+    assert_misc_feature(
+        "const c = class {
+            [`foo`]() {}
+        }",
+        MiscFeature::PropertyNameComputed,
+    )
+}
+
+#[test]
+fn computed_name_is_not_treated_as_literal() {
+    assert_no_misc_feature(
+        "const c = class {
+            [\"foo\"];
+        }",
+        MiscFeature::PropertyNameStringLiteral,
     )
 }

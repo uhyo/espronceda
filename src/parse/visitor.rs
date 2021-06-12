@@ -137,6 +137,9 @@ impl NodeVisitor {
                 self.misc_features
                     .insert(MiscFeature::PropertyNameNumericLiteral);
             }
+            PropName::Computed(..) => {
+                self.misc_features.insert(MiscFeature::PropertyNameComputed);
+            }
             _ => {}
         }
     }
@@ -463,20 +466,24 @@ impl VisitAll for NodeVisitor {
                     } else {
                         MiscFeature::ClassFieldNoInitializer
                     });
-                    match class_prop.key.as_ref() {
-                        Expr::Ident(..) => {
-                            self.misc_features
-                                .insert(MiscFeature::PropertyNameIdentifier);
+                    if class_prop.computed {
+                        self.misc_features.insert(MiscFeature::PropertyNameComputed);
+                    } else {
+                        match class_prop.key.as_ref() {
+                            Expr::Ident(..) => {
+                                self.misc_features
+                                    .insert(MiscFeature::PropertyNameIdentifier);
+                            }
+                            Expr::Lit(Lit::Str(..)) => {
+                                self.misc_features
+                                    .insert(MiscFeature::PropertyNameStringLiteral);
+                            }
+                            Expr::Lit(Lit::Num(..)) => {
+                                self.misc_features
+                                    .insert(MiscFeature::PropertyNameNumericLiteral);
+                            }
+                            _ => {}
                         }
-                        Expr::Lit(Lit::Str(..)) => {
-                            self.misc_features
-                                .insert(MiscFeature::PropertyNameStringLiteral);
-                        }
-                        Expr::Lit(Lit::Num(..)) => {
-                            self.misc_features
-                                .insert(MiscFeature::PropertyNameNumericLiteral);
-                        }
-                        _ => {}
                     }
                 }
                 _ => {}

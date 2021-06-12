@@ -171,4 +171,6 @@ pub enum MiscFeature {
     PropertyNameStringLiteral,
     /// numeric property name
     PropertyNameNumericLiteral,
+    /// [expr] property name
+    PropertyNameComputed,
 }
