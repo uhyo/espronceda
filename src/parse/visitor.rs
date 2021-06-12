@@ -91,6 +91,10 @@ impl NodeVisitor {
                     self.statement_features
                         .insert(StatementFeature::GeneratorFunctionDeclaration);
                 }
+                (true, true) => {
+                    self.statement_features
+                        .insert(StatementFeature::AsyncGeneratorFunctionDeclaration);
+                }
                 _ => {
                     unimplemented!("Unimplemented");
                 }
@@ -281,6 +285,13 @@ impl VisitAll for NodeVisitor {
                             ExpressionFeature::AnonymousGeneratorFunctionExpression
                         });
                     }
+                    (true, true) => {
+                        self.expression_features.insert(if has_name {
+                            ExpressionFeature::NamedAsyncGeneratorFunctionExpression
+                        } else {
+                            ExpressionFeature::AnonymousAsyncGeneratorFunctionExpression
+                        });
+                    }
                     _ => {
                         unimplemented!("Unimplemented")
                     }
@@ -382,6 +393,11 @@ impl VisitAll for NodeVisitor {
                                 (true, false) => {
                                     self.statement_features.insert(
                                         StatementFeature::AnonymousGeneratorFunctionDeclaration,
+                                    );
+                                }
+                                (true, true) => {
+                                    self.statement_features.insert(
+                                        StatementFeature::AnonymousAsyncGeneratorFunctionDeclaration,
                                     );
                                 }
                                 _ => {

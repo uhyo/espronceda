@@ -59,3 +59,21 @@ fn anon_generator_func_expr() {
         ExpressionFeature::AnonymousGeneratorFunctionExpression,
     )
 }
+
+#[test]
+fn async_generator_func_expr() {
+    assert_expr_feature(
+        "const func = async function*foo(a) {
+        };",
+        ExpressionFeature::NamedAsyncGeneratorFunctionExpression,
+    )
+}
+
+#[test]
+fn anon_async_generator_func_expr() {
+    assert_expr_feature(
+        "const func = async function*(a) {
+        };",
+        ExpressionFeature::AnonymousAsyncGeneratorFunctionExpression,
+    )
+}

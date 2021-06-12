@@ -79,6 +79,9 @@ pub enum StatementFeature {
     // generator function declaration
     GeneratorFunctionDeclaration,
     AnonymousGeneratorFunctionDeclaration,
+    // async generator function declaration
+    AsyncGeneratorFunctionDeclaration,
+    AnonymousAsyncGeneratorFunctionDeclaration,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -101,6 +104,10 @@ pub enum ExpressionFeature {
     YieldExpression,
     /// yield* expr
     YieldStarExpression,
+    /// async function* name() {}
+    NamedAsyncGeneratorFunctionExpression,
+    /// async function*() {}
+    AnonymousAsyncGeneratorFunctionExpression,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
