@@ -292,6 +292,10 @@ impl VisitAll for NodeVisitor {
     }
     fn visit_expr(&mut self, expr: &Expr, _parent: &dyn Node) {
         match expr {
+            Expr::Ident(..) => {
+                self.expression_features
+                    .insert(ExpressionFeature::Identifier);
+            }
             Expr::Fn(fn_expr) => {
                 let has_name = fn_expr.ident.is_some();
 

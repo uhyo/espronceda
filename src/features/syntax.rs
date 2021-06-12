@@ -93,6 +93,8 @@ pub enum StatementFeature {
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum ExpressionFeature {
+    /// identifier as an expression
+    Identifier,
     /// function name() {...}
     NamedFunctionExpression,
     /// function() {...}

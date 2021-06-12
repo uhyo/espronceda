@@ -1,5 +1,6 @@
 use crate::features::syntax::ExpressionFeature;
 use crate::parse::visitor::tests::assert_expr_feature;
+use crate::parse::visitor::tests::assert_no_expr_feature;
 
 #[test]
 fn yield_nothing() {
@@ -28,5 +29,13 @@ fn yield_star_expr() {
             yield* a;
         };",
         ExpressionFeature::YieldStarExpression,
+    )
+}
+
+#[test]
+fn identifier_is_not_yield_expr() {
+    assert_no_expr_feature(
+        "function foo() { return yield; }",
+        ExpressionFeature::YieldExpression,
     )
 }
