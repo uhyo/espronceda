@@ -434,6 +434,16 @@ impl VisitAll for NodeVisitor {
                         self.misc_features.insert(MiscFeature::StaticMethod);
                     }
                 }
+                ClassMember::ClassProp(class_prop) => {
+                    if class_prop.is_static {
+                        self.misc_features.insert(MiscFeature::StaticField);
+                    }
+                    self.misc_features.insert(if class_prop.value.is_some() {
+                        MiscFeature::ClassFieldWithInitializer
+                    } else {
+                        MiscFeature::ClassFieldNoInitializer
+                    });
+                }
                 _ => {}
             }
         }

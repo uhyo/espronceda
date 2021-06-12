@@ -40,3 +40,55 @@ fn static_set_method() {
         MiscFeature::StaticMethod,
     )
 }
+
+#[test]
+fn class_field() {
+    assert_misc_feature(
+        "const cl = class {
+            field
+        }",
+        MiscFeature::ClassFieldNoInitializer,
+    );
+}
+
+#[test]
+fn class_field_initializer() {
+    assert_misc_feature(
+        "const cl = class A {
+            [expr] = 100;
+        }",
+        MiscFeature::ClassFieldWithInitializer,
+    );
+}
+
+#[test]
+fn static_class_field() {
+    assert_misc_feature(
+        "const cl = class {
+            static field
+        }",
+        MiscFeature::StaticField,
+    );
+    assert_misc_feature(
+        "const cl = class {
+            static field
+        }",
+        MiscFeature::ClassFieldNoInitializer,
+    );
+}
+
+#[test]
+fn static_class_field_initializer() {
+    assert_misc_feature(
+        "const cl = class {
+            static field = 100;
+        }",
+        MiscFeature::StaticField,
+    );
+    assert_misc_feature(
+        "const cl = class {
+            static field = this;
+        }",
+        MiscFeature::ClassFieldWithInitializer,
+    );
+}

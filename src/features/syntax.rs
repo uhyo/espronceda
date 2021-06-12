@@ -160,4 +160,9 @@ pub enum MiscFeature {
     ExtendsHeritage,
     /// static method() {} in class
     StaticMethod,
+    /// class field
+    ClassFieldNoInitializer,
+    ClassFieldWithInitializer,
+    /// static field
+    StaticField,
 }
