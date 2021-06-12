@@ -72,10 +72,23 @@ pub enum StatementFeature {
     TryCatchFinallyStatement,
     // debugger;
     DebuggerStatement,
+    // Function declaration
+    FunctionDeclaration,
+    // anonymous function declaration (only possible as part of export default)
+    AnonymousFunctionDeclaration,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
-pub enum ExpressionFeature {}
+pub enum ExpressionFeature {
+    /// function name() {...}
+    NamedFunctionExpression,
+    /// function() {...}
+    AnonymousFunctionExpression,
+    /// () => {...}
+    ArrowFunction,
+    /// () => expr
+    ArrowFunctionConcise,
+}
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub enum MiscFeature {
@@ -101,4 +114,6 @@ pub enum MiscFeature {
     CatchBinding,
     // catch in try
     CatchNoBinding,
+    /// ...args in function arguments
+    RestArguments,
 }

@@ -5,6 +5,7 @@ mod debugger;
 mod empty;
 mod expr;
 mod r#for;
+mod func;
 mod if_stmt;
 mod labelled;
 mod r#return;

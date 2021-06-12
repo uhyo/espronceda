@@ -2,7 +2,12 @@ use crate::features::syntax::ExpressionFeature;
 use crate::features::syntax::MiscFeature;
 use crate::features::syntax::StatementFeature;
 use std::collections::HashSet;
+use swc_ecma_ast::BlockStmtOrExpr;
 use swc_ecma_ast::Decl;
+use swc_ecma_ast::DefaultDecl;
+use swc_ecma_ast::Expr;
+use swc_ecma_ast::Function;
+use swc_ecma_ast::ModuleDecl;
 use swc_ecma_ast::ObjectPatProp;
 use swc_ecma_ast::Pat;
 use swc_ecma_ast::Stmt;
@@ -47,6 +52,41 @@ impl NodeVisitor {
             },
         }
     }
+
+    fn visit_decl(&mut self, decl: &Decl) {
+        match decl {
+            Decl::Var(VarDecl { kind, decls, .. }) => {
+                match kind {
+                    VarDeclKind::Var => {
+                        self.statement_features
+                            .insert(StatementFeature::VariableStatement);
+                    }
+                    VarDeclKind::Let => {
+                        self.statement_features.insert(StatementFeature::LetBinding);
+                    }
+                    VarDeclKind::Const => {
+                        self.statement_features
+                            .insert(StatementFeature::ConstBinding);
+                    }
+                }
+                for decl in decls {
+                    match decl.init {
+                        None => {}
+                        Some(_) => {
+                            self.misc_features.insert(MiscFeature::Initializer);
+                        }
+                    }
+                }
+            }
+            Decl::Fn(fn_decl) => {
+                self.statement_features
+                    .insert(StatementFeature::FunctionDeclaration);
+            }
+            _ => {
+                // unimplemented!("Not implemneted yet")
+            }
+        }
+    }
 }
 
 impl VisitAll for NodeVisitor {
@@ -55,34 +95,9 @@ impl VisitAll for NodeVisitor {
             Stmt::Block(..) => {
                 self.statement_features.insert(StatementFeature::Block);
             }
-            Stmt::Decl(decl) => match decl {
-                Decl::Var(VarDecl { kind, decls, .. }) => {
-                    match kind {
-                        VarDeclKind::Var => {
-                            self.statement_features
-                                .insert(StatementFeature::VariableStatement);
-                        }
-                        VarDeclKind::Let => {
-                            self.statement_features.insert(StatementFeature::LetBinding);
-                        }
-                        VarDeclKind::Const => {
-                            self.statement_features
-                                .insert(StatementFeature::ConstBinding);
-                        }
-                    }
-                    for decl in decls {
-                        match decl.init {
-                            None => {}
-                            Some(_) => {
-                                self.misc_features.insert(MiscFeature::Initializer);
-                            }
-                        }
-                    }
-                }
-                _ => {
-                    // unimplemented!("Not implemneted yet")
-                }
-            },
+            Stmt::Decl(decl) => {
+                self.visit_decl(decl);
+            }
             Stmt::Empty(..) => {
                 self.statement_features
                     .insert(StatementFeature::EmptyStatement);
@@ -220,6 +235,31 @@ impl VisitAll for NodeVisitor {
             }
         }
     }
+    fn visit_expr(&mut self, expr: &Expr, _parent: &dyn Node) {
+        match expr {
+            Expr::Fn(fn_expr) => {
+                self.expression_features.insert(if fn_expr.ident.is_some() {
+                    ExpressionFeature::NamedFunctionExpression
+                } else {
+                    ExpressionFeature::AnonymousFunctionExpression
+                });
+            }
+            Expr::Arrow(arrow_expr) => {
+                self.expression_features.insert(match arrow_expr.body {
+                    BlockStmtOrExpr::BlockStmt(..) => ExpressionFeature::ArrowFunction,
+                    BlockStmtOrExpr::Expr(..) => ExpressionFeature::ArrowFunctionConcise,
+                });
+                for pat in arrow_expr.params.iter() {
+                    if let Pat::Rest(..) = pat {
+                        self.misc_features.insert(MiscFeature::RestArguments);
+                    }
+                }
+            }
+            _ => {
+                // unimplemented!("Unimplemented");
+            }
+        }
+    }
     fn visit_pat(&mut self, pat: &Pat, _parent: &dyn Node) {
         match pat {
             Pat::Object(obj_pat) => {
@@ -245,6 +285,38 @@ impl VisitAll for NodeVisitor {
                     .insert(MiscFeature::ArrayRestBindingPattern);
             }
             _ => {}
+        }
+    }
+    fn visit_module_decl(&mut self, decl: &ModuleDecl, _parent: &dyn Node) {
+        match decl {
+            ModuleDecl::ExportDecl(decl) => {
+                self.visit_decl(&decl.decl);
+            }
+            ModuleDecl::ExportDefaultDecl(decl) => {
+                match decl.decl {
+                    DefaultDecl::Fn(ref fn_decl) => {
+                        if fn_decl.ident.is_none() {
+                            // export default function
+                            self.statement_features
+                                .insert(StatementFeature::AnonymousFunctionDeclaration);
+                        }
+                    }
+                    _ => {}
+                };
+            }
+            _ => {
+                // unimplemented!("Not Implemented")
+            }
+        }
+    }
+    fn visit_function(&mut self, func: &Function, _parent: &dyn Node) {
+        for param in func.params.iter() {
+            match param.pat {
+                Pat::Rest(..) => {
+                    self.misc_features.insert(MiscFeature::RestArguments);
+                }
+                _ => {}
+            }
         }
     }
 }
