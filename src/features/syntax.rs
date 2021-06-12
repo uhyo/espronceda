@@ -79,6 +79,9 @@ pub enum StatementFeature {
     // generator function declaration
     GeneratorFunctionDeclaration,
     AnonymousGeneratorFunctionDeclaration,
+    // async function declaration
+    AsyncFunctionDeclaration,
+    AnonymousAsyncFunctionDeclaration,
     // async generator function declaration
     AsyncGeneratorFunctionDeclaration,
     AnonymousAsyncGeneratorFunctionDeclaration,
@@ -108,6 +111,10 @@ pub enum ExpressionFeature {
     YieldExpression,
     /// yield* expr
     YieldStarExpression,
+    NamedAsyncFunctionExpression,
+    AnonymousAsyncFunctionExpression,
+    AsyncArrowFunction,
+    AsyncArrowFunctionConcise,
     /// async function* name() {}
     NamedAsyncGeneratorFunctionExpression,
     /// async function*() {}

@@ -105,11 +105,10 @@ impl NodeVisitor {
                 (false, false, true) => StatementFeature::FunctionDeclaration,
                 (true, false, false) => StatementFeature::AnonymousGeneratorFunctionDeclaration,
                 (true, false, true) => StatementFeature::GeneratorFunctionDeclaration,
+                (false, true, false) => StatementFeature::AnonymousAsyncFunctionDeclaration,
+                (false, true, true) => StatementFeature::AsyncFunctionDeclaration,
                 (true, true, false) => StatementFeature::AnonymousAsyncGeneratorFunctionDeclaration,
                 (true, true, true) => StatementFeature::AsyncGeneratorFunctionDeclaration,
-                _ => {
-                    unimplemented!("Unimplemented")
-                }
             });
     }
 
@@ -311,6 +310,13 @@ impl VisitAll for NodeVisitor {
                             ExpressionFeature::AnonymousGeneratorFunctionExpression
                         });
                     }
+                    (false, true) => {
+                        self.expression_features.insert(if has_name {
+                            ExpressionFeature::NamedAsyncFunctionExpression
+                        } else {
+                            ExpressionFeature::AnonymousAsyncFunctionExpression
+                        });
+                    }
                     (true, true) => {
                         self.expression_features.insert(if has_name {
                             ExpressionFeature::NamedAsyncGeneratorFunctionExpression
@@ -318,16 +324,22 @@ impl VisitAll for NodeVisitor {
                             ExpressionFeature::AnonymousAsyncGeneratorFunctionExpression
                         });
                     }
-                    _ => {
-                        unimplemented!("Unimplemented")
-                    }
                 }
             }
             Expr::Arrow(arrow_expr) => {
-                self.expression_features.insert(match arrow_expr.body {
-                    BlockStmtOrExpr::BlockStmt(..) => ExpressionFeature::ArrowFunction,
-                    BlockStmtOrExpr::Expr(..) => ExpressionFeature::ArrowFunctionConcise,
-                });
+                self.expression_features
+                    .insert(match (&arrow_expr.body, arrow_expr.is_async) {
+                        (BlockStmtOrExpr::BlockStmt(..), false) => ExpressionFeature::ArrowFunction,
+                        (BlockStmtOrExpr::BlockStmt(..), true) => {
+                            ExpressionFeature::AsyncArrowFunction
+                        }
+                        (BlockStmtOrExpr::Expr(..), false) => {
+                            ExpressionFeature::ArrowFunctionConcise
+                        }
+                        (BlockStmtOrExpr::Expr(..), true) => {
+                            ExpressionFeature::AsyncArrowFunctionConcise
+                        }
+                    });
                 for pat in arrow_expr.params.iter() {
                     if let Pat::Rest(..) = pat {
                         self.misc_features.insert(MiscFeature::RestArguments);

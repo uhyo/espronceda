@@ -61,6 +61,45 @@ fn anon_generator_func_expr() {
 }
 
 #[test]
+fn async_func_expr() {
+    assert_expr_feature(
+        "const func = async function foo(a) {
+        };",
+        ExpressionFeature::NamedAsyncFunctionExpression,
+    )
+}
+
+#[test]
+fn anon_async_func_expr() {
+    assert_expr_feature(
+        "const func = async function(a) {
+        };",
+        ExpressionFeature::AnonymousAsyncFunctionExpression,
+    )
+}
+
+#[test]
+fn async_arrow_func_body() {
+    assert_expr_feature(
+        "func(
+            async (foo) => { return foo * 2 }
+        );",
+        ExpressionFeature::AsyncArrowFunction,
+    )
+}
+
+#[test]
+fn concise_async_arrow_func_body() {
+    assert_expr_feature(
+        "func(
+            async (foo) => (await foo) * 2,
+            123
+        );",
+        ExpressionFeature::AsyncArrowFunctionConcise,
+    )
+}
+
+#[test]
 fn async_generator_func_expr() {
     assert_expr_feature(
         "const func = async function*foo(a) {

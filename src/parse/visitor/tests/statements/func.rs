@@ -69,6 +69,35 @@ fn export_generator_func_decl() {
 }
 
 #[test]
+fn async_func_decl() {
+    assert_stmt_feature(
+        "async function gen(arg) {
+            await arg;
+        }",
+        StatementFeature::AsyncFunctionDeclaration,
+    )
+}
+
+#[test]
+fn anon_async_func_decl() {
+    assert_stmt_feature(
+        "export default async function(arg) {
+            await arg;
+        }",
+        StatementFeature::AnonymousAsyncFunctionDeclaration,
+    )
+}
+
+#[test]
+fn export_async_func_decl() {
+    assert_stmt_feature(
+        "export async function a(arg) {
+        }",
+        StatementFeature::AsyncFunctionDeclaration,
+    )
+}
+
+#[test]
 fn async_generator_func_decl() {
     assert_stmt_feature(
         "async function* gen(arg) {
