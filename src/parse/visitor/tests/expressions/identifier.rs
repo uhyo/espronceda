@@ -16,7 +16,7 @@ fn identifier_yield() {
 }
 
 #[test]
-#[ignore] // swc bug?
+#[ignore] // TODO: only valid in non-strict-mode code
 fn identifier_await() {
     assert_expr_feature(
         "function foo() { return await }",

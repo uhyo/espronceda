@@ -13,7 +13,7 @@ fn r#await() {
 }
 
 #[test]
-#[ignore] // swc bug?
+#[ignore] // TODO: only valid in non-strict-mode code
 fn identifier_is_not_await_expr() {
     assert_no_expr_feature(
         "function foo() { return await; }",
