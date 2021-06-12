@@ -323,6 +323,15 @@ impl VisitAll for NodeVisitor {
                 }
             }
             Expr::Class(class_expr) => {}
+            Expr::Yield(yield_expr) => {
+                self.expression_features.insert(
+                    match (yield_expr.delegate, yield_expr.arg.is_some()) {
+                        (false, false) => ExpressionFeature::YieldNothingExpression,
+                        (false, true) => ExpressionFeature::YieldExpression,
+                        (true, _) => ExpressionFeature::YieldStarExpression,
+                    },
+                );
+            }
             _ => {
                 // unimplemented!("Unimplemented");
             }

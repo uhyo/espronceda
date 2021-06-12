@@ -95,6 +95,12 @@ pub enum ExpressionFeature {
     NamedGeneratorFunctionExpression,
     /// function*() { ... }
     AnonymousGeneratorFunctionExpression,
+    /// yield
+    YieldNothingExpression,
+    /// yield expr
+    YieldExpression,
+    /// yield* expr
+    YieldStarExpression,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
