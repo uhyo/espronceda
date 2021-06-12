@@ -100,7 +100,8 @@ impl NodeVisitor {
                 }
             },
             Decl::Class(..) => {
-                // unimplemented!("Not implemneted yet")
+                self.statement_features
+                    .insert(StatementFeature::ClassDeclaration);
             }
             _ => {
                 // unimplemented!("Not implemneted yet")
@@ -404,6 +405,13 @@ impl VisitAll for NodeVisitor {
                                     unimplemented!("Unimplemented")
                                 }
                             }
+                        }
+                    }
+                    DefaultDecl::Class(ref class_decl) => {
+                        if class_decl.ident.is_none() {
+                            // export default class
+                            self.statement_features
+                                .insert(StatementFeature::AnonymousClassDeclaration);
                         }
                     }
                     _ => {}

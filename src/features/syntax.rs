@@ -82,6 +82,10 @@ pub enum StatementFeature {
     // async generator function declaration
     AsyncGeneratorFunctionDeclaration,
     AnonymousAsyncGeneratorFunctionDeclaration,
+    // class name { ... }
+    ClassDeclaration,
+    // anonymous class declaration
+    AnonymousClassDeclaration,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]

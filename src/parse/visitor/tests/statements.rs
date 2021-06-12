@@ -1,5 +1,6 @@
 mod block;
 mod r#break;
+mod class;
 mod r#continue;
 mod debugger;
 mod empty;
