@@ -112,6 +112,10 @@ pub enum ExpressionFeature {
     NamedAsyncGeneratorFunctionExpression,
     /// async function*() {}
     AnonymousAsyncGeneratorFunctionExpression,
+    /// class name { ... }
+    NamedClassExpression,
+    /// class { ... }
+    AnonymousClassExpression,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]

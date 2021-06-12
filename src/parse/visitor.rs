@@ -334,7 +334,14 @@ impl VisitAll for NodeVisitor {
                     }
                 }
             }
-            Expr::Class(class_expr) => {}
+            Expr::Class(class_expr) => {
+                self.expression_features
+                    .insert(if class_expr.ident.is_some() {
+                        ExpressionFeature::NamedClassExpression
+                    } else {
+                        ExpressionFeature::AnonymousClassExpression
+                    });
+            }
             Expr::Yield(yield_expr) => {
                 self.expression_features.insert(
                     match (yield_expr.delegate, yield_expr.arg.is_some()) {
