@@ -1,1 +1,2 @@
 mod func;
+mod method;

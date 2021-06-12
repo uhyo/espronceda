@@ -116,4 +116,12 @@ pub enum MiscFeature {
     CatchNoBinding,
     /// ...args in function arguments
     RestArguments,
+    /// method(...){...}
+    Method,
+    /// *method
+    GeneratorMethod,
+    /// async method(){...}
+    AsyncMethod,
+    /// async *method(){...}
+    AsyncGeneratorMethod,
 }

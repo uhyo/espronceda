@@ -3,6 +3,7 @@ use crate::features::syntax::MiscFeature;
 use crate::features::syntax::StatementFeature;
 use std::collections::HashSet;
 use swc_ecma_ast::BlockStmtOrExpr;
+use swc_ecma_ast::ClassMember;
 use swc_ecma_ast::Decl;
 use swc_ecma_ast::DefaultDecl;
 use swc_ecma_ast::Expr;
@@ -10,6 +11,8 @@ use swc_ecma_ast::Function;
 use swc_ecma_ast::ModuleDecl;
 use swc_ecma_ast::ObjectPatProp;
 use swc_ecma_ast::Pat;
+use swc_ecma_ast::Prop;
+use swc_ecma_ast::PropOrSpread;
 use swc_ecma_ast::Stmt;
 use swc_ecma_ast::VarDecl;
 use swc_ecma_ast::VarDeclKind;
@@ -78,14 +81,27 @@ impl NodeVisitor {
                     }
                 }
             }
-            Decl::Fn(fn_decl) => {
+            Decl::Fn(..) => {
                 self.statement_features
                     .insert(StatementFeature::FunctionDeclaration);
+            }
+            Decl::Class(..) => {
+                // unimplemented!("Not implemneted yet")
             }
             _ => {
                 // unimplemented!("Not implemneted yet")
             }
         }
+    }
+
+    fn visit_method_func(&mut self, func: &Function) {
+        self.misc_features
+            .insert(match (func.is_generator, func.is_async) {
+                (false, false) => MiscFeature::Method,
+                (true, false) => MiscFeature::GeneratorMethod,
+                (false, true) => MiscFeature::AsyncMethod,
+                (true, true) => MiscFeature::AsyncGeneratorMethod,
+            });
     }
 }
 
@@ -255,6 +271,26 @@ impl VisitAll for NodeVisitor {
                     }
                 }
             }
+            Expr::Object(obj_expr) => {
+                for p in obj_expr.props.iter() {
+                    match p {
+                        PropOrSpread::Prop(prop) => {
+                            match prop.as_ref() {
+                                Prop::Method(method) => {
+                                    self.visit_method_func(&method.function);
+                                }
+                                _ => {
+                                    // unimplemented!("Unimplemented")
+                                }
+                            }
+                        }
+                        PropOrSpread::Spread(..) => {
+                            // unimplemented!("Unimplemented")
+                        }
+                    }
+                }
+            }
+            Expr::Class(class_expr) => for member in class_expr.class.body.iter() {},
             _ => {
                 // unimplemented!("Unimplemented");
             }
@@ -316,6 +352,16 @@ impl VisitAll for NodeVisitor {
                     self.misc_features.insert(MiscFeature::RestArguments);
                 }
                 _ => {}
+            }
+        }
+    }
+    fn visit_class_member(&mut self, member: &ClassMember, _parent: &dyn Node) {
+        match member {
+            ClassMember::Method(method) => {
+                self.visit_method_func(&method.function);
+            }
+            _ => {
+                // unimplemented!("Unimplemented");
             }
         }
     }
