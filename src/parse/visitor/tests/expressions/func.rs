@@ -41,3 +41,21 @@ fn concise_arrow_func_body() {
         ExpressionFeature::ArrowFunctionConcise,
     )
 }
+
+#[test]
+fn generator_func_expr() {
+    assert_expr_feature(
+        "const func = function*foo(a) {
+        };",
+        ExpressionFeature::NamedGeneratorFunctionExpression,
+    )
+}
+
+#[test]
+fn anon_generator_func_expr() {
+    assert_expr_feature(
+        "const func = function*(a) {
+        };",
+        ExpressionFeature::AnonymousGeneratorFunctionExpression,
+    )
+}

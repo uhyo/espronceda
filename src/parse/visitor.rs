@@ -82,10 +82,19 @@ impl NodeVisitor {
                     }
                 }
             }
-            Decl::Fn(..) => {
-                self.statement_features
-                    .insert(StatementFeature::FunctionDeclaration);
-            }
+            Decl::Fn(fn_decl) => match (fn_decl.function.is_generator, fn_decl.function.is_async) {
+                (false, false) => {
+                    self.statement_features
+                        .insert(StatementFeature::FunctionDeclaration);
+                }
+                (true, false) => {
+                    self.statement_features
+                        .insert(StatementFeature::GeneratorFunctionDeclaration);
+                }
+                _ => {
+                    unimplemented!("Unimplemented");
+                }
+            },
             Decl::Class(..) => {
                 // unimplemented!("Not implemneted yet")
             }
@@ -255,11 +264,27 @@ impl VisitAll for NodeVisitor {
     fn visit_expr(&mut self, expr: &Expr, _parent: &dyn Node) {
         match expr {
             Expr::Fn(fn_expr) => {
-                self.expression_features.insert(if fn_expr.ident.is_some() {
-                    ExpressionFeature::NamedFunctionExpression
-                } else {
-                    ExpressionFeature::AnonymousFunctionExpression
-                });
+                let has_name = fn_expr.ident.is_some();
+
+                match (fn_expr.function.is_generator, fn_expr.function.is_async) {
+                    (false, false) => {
+                        self.expression_features.insert(if has_name {
+                            ExpressionFeature::NamedFunctionExpression
+                        } else {
+                            ExpressionFeature::AnonymousFunctionExpression
+                        });
+                    }
+                    (true, false) => {
+                        self.expression_features.insert(if has_name {
+                            ExpressionFeature::NamedGeneratorFunctionExpression
+                        } else {
+                            ExpressionFeature::AnonymousGeneratorFunctionExpression
+                        });
+                    }
+                    _ => {
+                        unimplemented!("Unimplemented")
+                    }
+                }
             }
             Expr::Arrow(arrow_expr) => {
                 self.expression_features.insert(match arrow_expr.body {
@@ -297,7 +322,7 @@ impl VisitAll for NodeVisitor {
                     }
                 }
             }
-            Expr::Class(class_expr) => for member in class_expr.class.body.iter() {},
+            Expr::Class(class_expr) => {}
             _ => {
                 // unimplemented!("Unimplemented");
             }
@@ -340,8 +365,20 @@ impl VisitAll for NodeVisitor {
                     DefaultDecl::Fn(ref fn_decl) => {
                         if fn_decl.ident.is_none() {
                             // export default function
-                            self.statement_features
-                                .insert(StatementFeature::AnonymousFunctionDeclaration);
+                            match (fn_decl.function.is_generator, fn_decl.function.is_async) {
+                                (false, false) => {
+                                    self.statement_features
+                                        .insert(StatementFeature::AnonymousFunctionDeclaration);
+                                }
+                                (true, false) => {
+                                    self.statement_features.insert(
+                                        StatementFeature::AnonymousGeneratorFunctionDeclaration,
+                                    );
+                                }
+                                _ => {
+                                    unimplemented!("Unimplemented")
+                                }
+                            }
                         }
                     }
                     _ => {}

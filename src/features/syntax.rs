@@ -76,6 +76,9 @@ pub enum StatementFeature {
     FunctionDeclaration,
     // anonymous function declaration (only possible as part of export default)
     AnonymousFunctionDeclaration,
+    // generator function declaration
+    GeneratorFunctionDeclaration,
+    AnonymousGeneratorFunctionDeclaration,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
@@ -88,6 +91,10 @@ pub enum ExpressionFeature {
     ArrowFunction,
     /// () => expr
     ArrowFunctionConcise,
+    /// function* name() { ... }
+    NamedGeneratorFunctionExpression,
+    /// function*() { ... }
+    AnonymousGeneratorFunctionExpression,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]

@@ -30,3 +30,32 @@ fn anon_func_decl() {
         StatementFeature::AnonymousFunctionDeclaration,
     )
 }
+
+#[test]
+fn generator_func_decl() {
+    assert_stmt_feature(
+        "function* gen(arg) {
+            yield* arg;
+        }",
+        StatementFeature::GeneratorFunctionDeclaration,
+    )
+}
+
+#[test]
+fn anon_generator_func_decl() {
+    assert_stmt_feature(
+        "export default function*(arg) {
+            yield* arg;
+        }",
+        StatementFeature::AnonymousGeneratorFunctionDeclaration,
+    )
+}
+
+#[test]
+fn export_generator_func_decl() {
+    assert_stmt_feature(
+        "export function* a(arg) {
+        }",
+        StatementFeature::GeneratorFunctionDeclaration,
+    )
+}
