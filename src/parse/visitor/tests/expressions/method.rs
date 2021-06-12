@@ -42,6 +42,26 @@ fn async_generator_method() {
 }
 
 #[test]
+fn getter_prop() {
+    assert_misc_feature(
+        "const obj = {
+            get foo() { return 100 },
+        }",
+        MiscFeature::GetterProp,
+    )
+}
+
+#[test]
+fn setter_prop() {
+    assert_misc_feature(
+        "const obj = {
+            set foo(n) { }
+        }",
+        MiscFeature::SetterProp,
+    )
+}
+
+#[test]
 fn class_normal_method() {
     assert_misc_feature(
         "class A {
@@ -78,5 +98,25 @@ fn class_async_generator_method() {
             async*method() { await (yield 3); }
         }",
         MiscFeature::AsyncGeneratorMethod,
+    )
+}
+
+#[test]
+fn class_getter_prop() {
+    assert_misc_feature(
+        "class C {
+            get foo() { return 100 }
+        }",
+        MiscFeature::GetterProp,
+    )
+}
+
+#[test]
+fn class_setter_prop() {
+    assert_misc_feature(
+        "const obj = class {
+            set foo(n) { }
+        }",
+        MiscFeature::SetterProp,
     )
 }

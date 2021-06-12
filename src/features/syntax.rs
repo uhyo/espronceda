@@ -124,4 +124,8 @@ pub enum MiscFeature {
     AsyncMethod,
     /// async *method(){...}
     AsyncGeneratorMethod,
+    /// get prop() { ... }
+    GetterProp,
+    /// set prop(n) { ... }
+    SetterProp,
 }

@@ -8,6 +8,7 @@ use swc_ecma_ast::Decl;
 use swc_ecma_ast::DefaultDecl;
 use swc_ecma_ast::Expr;
 use swc_ecma_ast::Function;
+use swc_ecma_ast::MethodKind;
 use swc_ecma_ast::ModuleDecl;
 use swc_ecma_ast::ObjectPatProp;
 use swc_ecma_ast::Pat;
@@ -279,6 +280,12 @@ impl VisitAll for NodeVisitor {
                                 Prop::Method(method) => {
                                     self.visit_method_func(&method.function);
                                 }
+                                Prop::Getter(..) => {
+                                    self.misc_features.insert(MiscFeature::GetterProp);
+                                }
+                                Prop::Setter(..) => {
+                                    self.misc_features.insert(MiscFeature::SetterProp);
+                                }
                                 _ => {
                                     // unimplemented!("Unimplemented")
                                 }
@@ -358,6 +365,15 @@ impl VisitAll for NodeVisitor {
     fn visit_class_member(&mut self, member: &ClassMember, _parent: &dyn Node) {
         match member {
             ClassMember::Method(method) => {
+                match method.kind {
+                    MethodKind::Getter => {
+                        self.misc_features.insert(MiscFeature::GetterProp);
+                    }
+                    MethodKind::Setter => {
+                        self.misc_features.insert(MiscFeature::SetterProp);
+                    }
+                    MethodKind::Method => {}
+                }
                 self.visit_method_func(&method.function);
             }
             _ => {
