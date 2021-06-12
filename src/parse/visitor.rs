@@ -388,6 +388,10 @@ impl VisitAll for NodeVisitor {
                     },
                 );
             }
+            Expr::Await(..) => {
+                self.expression_features
+                    .insert(ExpressionFeature::AwaitExpression);
+            }
             _ => {
                 // unimplemented!("Unimplemented");
             }

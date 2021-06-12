@@ -123,6 +123,8 @@ pub enum ExpressionFeature {
     NamedClassExpression,
     /// class { ... }
     AnonymousClassExpression,
+    /// await expr
+    AwaitExpression,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
