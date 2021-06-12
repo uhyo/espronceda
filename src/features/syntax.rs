@@ -165,4 +165,10 @@ pub enum MiscFeature {
     ClassFieldWithInitializer,
     /// static field
     StaticField,
+    /// identifier property name
+    PropertyNameIdentifier,
+    /// "string" property name
+    PropertyNameStringLiteral,
+    /// numeric property name
+    PropertyNameNumericLiteral,
 }

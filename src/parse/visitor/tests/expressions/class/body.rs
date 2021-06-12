@@ -92,3 +92,63 @@ fn static_class_field_initializer() {
         MiscFeature::ClassFieldWithInitializer,
     );
 }
+
+#[test]
+fn field_property_name_identifier() {
+    assert_misc_feature(
+        "const c = class {
+            field = 3;
+        }",
+        MiscFeature::PropertyNameIdentifier,
+    )
+}
+
+#[test]
+fn method_property_name_identifier() {
+    assert_misc_feature(
+        "const c = class {
+            method() {}
+        }",
+        MiscFeature::PropertyNameIdentifier,
+    )
+}
+
+#[test]
+fn field_property_name_string_literal() {
+    assert_misc_feature(
+        "const c = class {
+            \"field\" = 3;
+        }",
+        MiscFeature::PropertyNameStringLiteral,
+    )
+}
+
+#[test]
+fn method_property_name_string_literal() {
+    assert_misc_feature(
+        "const c = class {
+            'method'() {}
+        }",
+        MiscFeature::PropertyNameStringLiteral,
+    )
+}
+
+#[test]
+fn field_property_name_numeric_literal() {
+    assert_misc_feature(
+        "const c = class {
+            3 = 3;
+        }",
+        MiscFeature::PropertyNameNumericLiteral,
+    )
+}
+
+#[test]
+fn method_property_name_numeric_literal() {
+    assert_misc_feature(
+        "const c = class {
+            0xff() {}
+        }",
+        MiscFeature::PropertyNameNumericLiteral,
+    )
+}

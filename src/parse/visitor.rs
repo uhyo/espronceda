@@ -9,11 +9,13 @@ use swc_ecma_ast::Decl;
 use swc_ecma_ast::DefaultDecl;
 use swc_ecma_ast::Expr;
 use swc_ecma_ast::Function;
+use swc_ecma_ast::Lit;
 use swc_ecma_ast::MethodKind;
 use swc_ecma_ast::ModuleDecl;
 use swc_ecma_ast::ObjectPatProp;
 use swc_ecma_ast::Pat;
 use swc_ecma_ast::Prop;
+use swc_ecma_ast::PropName;
 use swc_ecma_ast::PropOrSpread;
 use swc_ecma_ast::Stmt;
 use swc_ecma_ast::VarDecl;
@@ -119,6 +121,24 @@ impl NodeVisitor {
                 (false, true) => MiscFeature::AsyncMethod,
                 (true, true) => MiscFeature::AsyncGeneratorMethod,
             });
+    }
+
+    fn visit_field_key(&mut self, expr: &PropName) {
+        match expr {
+            PropName::Ident(..) => {
+                self.misc_features
+                    .insert(MiscFeature::PropertyNameIdentifier);
+            }
+            PropName::Str(..) => {
+                self.misc_features
+                    .insert(MiscFeature::PropertyNameStringLiteral);
+            }
+            PropName::Num(..) => {
+                self.misc_features
+                    .insert(MiscFeature::PropertyNameNumericLiteral);
+            }
+            _ => {}
+        }
     }
 }
 
@@ -443,6 +463,21 @@ impl VisitAll for NodeVisitor {
                     } else {
                         MiscFeature::ClassFieldNoInitializer
                     });
+                    match class_prop.key.as_ref() {
+                        Expr::Ident(..) => {
+                            self.misc_features
+                                .insert(MiscFeature::PropertyNameIdentifier);
+                        }
+                        Expr::Lit(Lit::Str(..)) => {
+                            self.misc_features
+                                .insert(MiscFeature::PropertyNameStringLiteral);
+                        }
+                        Expr::Lit(Lit::Num(..)) => {
+                            self.misc_features
+                                .insert(MiscFeature::PropertyNameNumericLiteral);
+                        }
+                        _ => {}
+                    }
                 }
                 _ => {}
             }
@@ -461,6 +496,7 @@ impl VisitAll for NodeVisitor {
                     MethodKind::Method => {}
                 }
                 self.visit_method_func(&method.function);
+                self.visit_field_key(&method.key);
             }
             _ => {
                 // unimplemented!("Unimplemented");
