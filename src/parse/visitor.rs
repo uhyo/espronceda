@@ -82,23 +82,9 @@ impl NodeVisitor {
                     }
                 }
             }
-            Decl::Fn(fn_decl) => match (fn_decl.function.is_generator, fn_decl.function.is_async) {
-                (false, false) => {
-                    self.statement_features
-                        .insert(StatementFeature::FunctionDeclaration);
-                }
-                (true, false) => {
-                    self.statement_features
-                        .insert(StatementFeature::GeneratorFunctionDeclaration);
-                }
-                (true, true) => {
-                    self.statement_features
-                        .insert(StatementFeature::AsyncGeneratorFunctionDeclaration);
-                }
-                _ => {
-                    unimplemented!("Unimplemented");
-                }
-            },
+            Decl::Fn(fn_decl) => {
+                self.visit_func_decl(&fn_decl.function, true);
+            }
             Decl::Class(..) => {
                 self.statement_features
                     .insert(StatementFeature::ClassDeclaration);
@@ -107,6 +93,21 @@ impl NodeVisitor {
                 // unimplemented!("Not implemneted yet")
             }
         }
+    }
+
+    fn visit_func_decl(&mut self, func: &Function, has_name: bool) {
+        self.statement_features
+            .insert(match (func.is_generator, func.is_async, has_name) {
+                (false, false, false) => StatementFeature::AnonymousFunctionDeclaration,
+                (false, false, true) => StatementFeature::FunctionDeclaration,
+                (true, false, false) => StatementFeature::AnonymousGeneratorFunctionDeclaration,
+                (true, false, true) => StatementFeature::GeneratorFunctionDeclaration,
+                (true, true, false) => StatementFeature::AnonymousAsyncGeneratorFunctionDeclaration,
+                (true, true, true) => StatementFeature::AsyncGeneratorFunctionDeclaration,
+                _ => {
+                    unimplemented!("Unimplemented")
+                }
+            });
     }
 
     fn visit_method_func(&mut self, func: &Function) {
@@ -391,34 +392,16 @@ impl VisitAll for NodeVisitor {
             ModuleDecl::ExportDefaultDecl(decl) => {
                 match decl.decl {
                     DefaultDecl::Fn(ref fn_decl) => {
-                        if fn_decl.ident.is_none() {
-                            // export default function
-                            match (fn_decl.function.is_generator, fn_decl.function.is_async) {
-                                (false, false) => {
-                                    self.statement_features
-                                        .insert(StatementFeature::AnonymousFunctionDeclaration);
-                                }
-                                (true, false) => {
-                                    self.statement_features.insert(
-                                        StatementFeature::AnonymousGeneratorFunctionDeclaration,
-                                    );
-                                }
-                                (true, true) => {
-                                    self.statement_features.insert(
-                                        StatementFeature::AnonymousAsyncGeneratorFunctionDeclaration,
-                                    );
-                                }
-                                _ => {
-                                    unimplemented!("Unimplemented")
-                                }
-                            }
-                        }
+                        self.visit_func_decl(&fn_decl.function, fn_decl.ident.is_some())
                     }
                     DefaultDecl::Class(ref class_decl) => {
                         if class_decl.ident.is_none() {
                             // export default class
                             self.statement_features
                                 .insert(StatementFeature::AnonymousClassDeclaration);
+                        } else {
+                            self.statement_features
+                                .insert(StatementFeature::ClassDeclaration);
                         }
                     }
                     _ => {}

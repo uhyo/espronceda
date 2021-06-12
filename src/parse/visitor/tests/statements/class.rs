@@ -33,6 +33,16 @@ fn anon_class_declaration() {
 }
 
 #[test]
+fn export_default_named_class_declaration() {
+    assert_stmt_feature(
+        "export default class C {
+            method() {}
+        }",
+        StatementFeature::ClassDeclaration,
+    )
+}
+
+#[test]
 fn distinct_class_declaration() {
     assert_no_stmt_feature(
         "export default class {}",

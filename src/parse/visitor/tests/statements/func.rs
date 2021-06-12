@@ -32,6 +32,14 @@ fn anon_func_decl() {
 }
 
 #[test]
+fn export_default_named_func_decl() {
+    assert_stmt_feature(
+        "export default function foo() {}",
+        StatementFeature::FunctionDeclaration,
+    )
+}
+
+#[test]
 fn generator_func_decl() {
     assert_stmt_feature(
         "function* gen(arg) {
